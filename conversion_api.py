@@ -122,8 +122,8 @@ def page_not_found(error):
         {'error': 'invalid request'},
         404
     )
-    response.headers = headers;
-    return response;
+    response.headers = headers
+    return response
 
 @app.errorhandler(400)
 def bad_request(error):
@@ -132,8 +132,8 @@ def bad_request(error):
         {'error': 'bad request'},
         400
     )
-    response.headers = headers;
-    return response;
+    response.headers = headers
+    return response
 
 @app.errorhandler(500)
 def server_error(error):
@@ -142,7 +142,7 @@ def server_error(error):
         {'error': 'server error'},
         500
     )
-    response.headers = headers;
-    return response;
+    response.headers = headers
+    return response
 
 app.run(port=3533)
