@@ -1,3 +1,4 @@
+from os import error
 from flask import Flask, make_response, request
 import json
 
@@ -33,6 +34,44 @@ def handle_request(service_type, service_measure1, measure1_value, service_measu
         return temp_request(service_measure1, measure1_value, service_measure2)
     else:
         return invalid_servicetype()
+
+@app.route('/convert', methods=['POST'])
+def handle_postrequest():
+    service_type = request.form.get('service_type')
+    service_measure1 = request.form.get('from_measurement')
+    service_measure2 = request.form.get('to_measurement')
+    measure1_value = request.form.get('measurement_value')
+    error_message = ""
+   
+    if service_type == None:
+       error_message = 'missing form field \'service_type\''
+    elif service_measure1 == None:
+        error_message = 'missing form field \'from_measurement\''
+    elif service_measure2 == None:
+        error_message = 'missing form field \'to_measurement\''
+    elif measure1_value == None:
+        error_message = 'missing form field \'measurement_value\''
+
+    if error_message != "":
+        headers = {"Content-Type": "application/json"}
+        response = make_response(
+        {'error': error_message},
+        400
+        )
+        response.headers = headers
+        return response
+    else:
+        try:
+            measure1_value = float(measure1_value)
+            return handle_request(service_type, service_measure1, measure1_value, service_measure2)
+        except:
+            headers = {"Content-Type": "application/json"}
+            response = make_response(
+            {'error': 'form field \'measurement_value\' could not be converted to a float'},
+            400
+            )
+            response.headers = headers
+            return response
 
 def speed_request(speed_measure1, speed_value, speed_measure2):
     headers = {"Content-Type": "application/json"}
@@ -84,14 +123,14 @@ def weight_request(weight_measure1, weight_value, weight_measure2):
 
 def temp_request(temp_measure1, temp_value, temp_measure2):
     headers = {"Content-Type": "application/json"}
-    if temp_measure1 == 'fahren' and temp_measure2 == 'cels':
+    if temp_measure1 == 'fahrenheit' and temp_measure2 == 'celsius':
         response = make_response(
         {'celsius': (temp_value - 32) * (5/9)},
         200
         )
         response.headers = headers
         return response
-    elif temp_measure1 == 'cels' and temp_measure2 == 'fahren':
+    elif temp_measure1 == 'celsius' and temp_measure2 == 'fahrenheit':
         response = make_response(
         {'fahrenheit': (temp_value * (9 / 5)) + 32},
         200
