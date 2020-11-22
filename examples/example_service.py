@@ -3,7 +3,7 @@ import json
 
 app = Flask(__name__)
 
-# Uncomment code for below to turn on debugging
+# Uncomment code below to turn on debugging
 # app.config["DEBUG"] = True
 
 @app.route('/example', methods=['GET'])
