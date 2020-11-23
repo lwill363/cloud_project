@@ -3,41 +3,60 @@ import json
 
 app = Flask(__name__)
 
-# Uncomment code below to turn on debugging
-# app.config["DEBUG"] = True
 
-@app.route('/example', methods=['GET'])
-def handle_getrequest():
-    name = request.args.get("name")
-    message = ""
-    if name == None:
-        message = "You have no name"
-    else:
-        message = "Your name is " + name
+# app.config["debug"] = True
+
+@app.route('/speed_request', methods=['POST'])
+def handle_speed_request():
+    speed_measure = request.form.get("speed_measure")
+    speed_value = request.form.get("speed_value")
+    speedM = speed_measure
+    speedV = speed_value
 
     headers = {"Content-Type": "application/json"}
+
     response = make_response(
-    {'message': message},
-    200
+
+         {'measure': speedM},
+         {'value': speedV},
+         200
+    )
+
+
+@app.route('/weight_request', methods=['POST'])
+def handle_weight_request():
+    weight_measure = request.form.get("weight_measure")
+    weight_value = request.form.get("weight_value")
+    weightM = weight_measure
+    weightV = weight_value
+
+    headers = {"Content-Type": "application/json"}
+
+    response = make_response(
+
+         {'measure': weightM},
+         {'value': weightV},
+         200
+    )
+
+
+@app.route('/temp_request', methods=['POST'])
+def handle_temp_request():
+    temp_measure = request.form.get("temp_measure")
+    temp_value = request.form.get("temp_value")
+    tempM = temp_measure
+    tempV = temp_value
+
+    headers = {"Content-Type": "application/json"}
+
+    response = make_response(
+
+        {'measure': tempM},
+        {'value': tempV},
+        200
     )
     response.headers = headers
     return response
 
-@app.route('/example', methods=['POST'])
-def handle_postrequest():
-    name = request.form.get("name")
-    message = ""
-    if name == None:
-        message = "You have no name"
-    else:
-        message = "Your name is " + name
-
-    headers = {"Content-Type": "application/json"}
-    response = make_response(
-    {'message': message},
-    200
-    )
-    response.headers = headers
-    return response
 
 app.run(port=3533)
