@@ -8,19 +8,32 @@ app = Flask(__name__)
 
 @app.route('/speed_request', methods=['POST'])
 def handle_speed_request():
-    speed_measure = request.form.get("speed_measure")
+    speed_measure1 = request.form.get("speed_measure1")
+    speed_measure2 = request.form.get("speed_measure2")
     speed_value = request.form.get("speed_value")
-    values = speed_measure + speed_value
-
+    
     headers = {"Content-Type": "application/json"}
-
-    response = make_response(
-
-        {'values': values},
+    if speed_measure1 == 'mph' and speed_measure2 == 'kph':
+        response = make_response(
+        {'kph': speed_value * 1.609344},
         200
-    )
-    response.headers = headers
-    return response
+        )
+        response.headers = headers
+        return response
+    elif speed_measure1 == 'kph' and speed_measure2 == 'mph':
+        response = make_response(
+        {'mph': speed_value / 1.609344},
+        200
+        )
+        response.headers = headers
+        return response
+    else:
+        response = make_response(
+            {'error': 'Invalid speed request format'},
+            400
+        )
+        response.headers = headers
+        return response
 
 
 @app.route('/weight_request', methods=['POST'])
