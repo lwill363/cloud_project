@@ -1,6 +1,7 @@
 from os import error
 from flask import Flask, make_response, request
 import json
+import requests
 
 app = Flask(__name__)
 
@@ -90,79 +91,38 @@ def handle_postrequest():
             return response
 
 def speed_request(speed_measure1, speed_value, speed_measure2):
-    headers = {"Content-Type": "application/json",  
-            'Access-Control-Allow-Origin': '*'}
-    if speed_measure1 == 'mph' and speed_measure2 == 'kph':
-        response = make_response(
-        {'kph': speed_value * 1.609344},
-        200
-        )
-        response.headers = headers
-        return response
-    elif speed_measure1 == 'kph' and speed_measure2 == 'mph':
-        response = make_response(
-        {'mph': speed_value / 1.609344},
-        200
-        )
-        response.headers = headers
-        return response
-    else:
-        response = make_response(
-            {'error': 'Invalid speed request format'},
-            400
-        )
-        response.headers = headers
-        return response
+    url = "http://127.0.0.1:3534/speed_request"
+
+    payload={'speed_measure1': speed_measure1,
+    'speed_measure2': speed_measure2,
+    'speed_value': speed_value}
+
+    response = requests.request("POST", url, data=payload)
+
+    return make_response(response.json(), response.status_code)
+
 
 def weight_request(weight_measure1, weight_value, weight_measure2):
-    headers = {"Content-Type": "application/json",  
-            'Access-Control-Allow-Origin': '*'}
-    if weight_measure1 == 'lbs' and weight_measure2 == 'kg':
-        response = make_response(
-        {'kg': weight_value * 0.45359237},
-        200
-        )
-        response.headers = headers
-        return response
-    elif weight_measure1 == 'kg' and weight_measure2 == 'lbs':
-        response = make_response(
-        {'lbs': weight_value / 0.45359237},
-        200
-        )
-        response.headers = headers
-        return response
-    else:
-        response = make_response(
-        {'error': 'Invalid weight request format'},
-        400
-        )
-        response.headers = headers
-        return response
+    url = "http://127.0.0.1:3534/weight_request"
+
+    payload={'weight_measure1': weight_measure1,
+    'weight_measure2': weight_measure2,
+    'weight_value': weight_value}
+
+    response = requests.request("POST", url, data=payload)
+
+    return make_response(response.json(), response.status_code)
 
 def temp_request(temp_measure1, temp_value, temp_measure2):
-    headers = {"Content-Type": "application/json",  
-            'Access-Control-Allow-Origin': '*'}
-    if temp_measure1 == 'fahrenheit' and temp_measure2 == 'celsius':
-        response = make_response(
-        {'celsius': (temp_value - 32) * (5/9)},
-        200
-        )
-        response.headers = headers
-        return response
-    elif temp_measure1 == 'celsius' and temp_measure2 == 'fahrenheit':
-        response = make_response(
-        {'fahrenheit': (temp_value * (9 / 5)) + 32},
-        200
-        )
-        response.headers = headers
-        return response
-    else:
-        response = make_response(
-        {'error': 'Invalid temperature request format'},
-        400
-        )
-        response.headers = headers
-        return response
+    url = "http://127.0.0.1:3534/temp_request"
+
+    payload={'temp_measure1': temp_measure1,
+    'temp_measure2': temp_measure2,
+    'temp_value': temp_value}
+
+    response = requests.request("POST", url, data=payload)
+
+    return make_response(response.json(), response.status_code)
 
 def invalid_servicetype():
     headers = {"Content-Type": "application/json",  
