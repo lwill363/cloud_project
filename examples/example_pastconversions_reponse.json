@@ -1,0 +1,24 @@
+{
+    "conversions": [
+        {
+            "kg": 14.9685,
+            "lbs": 33.0
+        },
+        {
+            "kph": 53.1084,
+            "mph": 33.0
+        },
+        {
+            "celsius": 33.0,
+            "fahrenheit": 91.4
+        },
+        {
+            "celsius": 33.0,
+            "fahrenheit": 91.4
+        },
+        {
+            "celsius": 50.0,
+            "fahrenheit": 122.0
+        }
+    ]
+}
