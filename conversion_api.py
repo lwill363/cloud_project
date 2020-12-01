@@ -2,6 +2,7 @@ from os import error
 from flask import Flask, make_response, request
 import json
 import requests
+import pymysql
 
 app = Flask(__name__)
 
@@ -123,6 +124,19 @@ def temp_request(temp_measure1, temp_value, temp_measure2):
     response = requests.request("POST", url, data=payload)
 
     return make_response(response.json(), response.status_code)
+
+@app.route('/conversions', methods=['GET'])
+def get_conversions():
+    db = pymysql.connect("database-1.cjdljloisiap.us-east-2.rds.amazonaws.com", "clouduser", "cloudsqluser$1", "Conversions")
+    cursor = db.cursor()
+    cursor.execute('SELECT * From conversions ORDER BY ID DESC LIMIT 5')
+    results = cursor.fetchall()
+    db.close()
+
+    columns = ['mph', 'kph', 'lbs', 'kg', 'fahrenheit', 'celsius']
+    conversions = [{k:v for (k,v) in zip(columns, row[1:]) if v != None} for row in results]
+
+    return make_response({'conversions': conversions}, 200)
 
 def invalid_servicetype():
     headers = {"Content-Type": "application/json",  
