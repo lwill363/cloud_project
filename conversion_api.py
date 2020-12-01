@@ -98,9 +98,16 @@ def speed_request(speed_measure1, speed_value, speed_measure2):
     'speed_measure2': speed_measure2,
     'speed_value': speed_value}
 
-    response = requests.request("POST", url, data=payload)
+    headers = {"Content-Type": "application/json",  
+    'Access-Control-Allow-Origin': '*'}
 
-    return make_response(response.json(), response.status_code)
+    service_response = requests.request("POST", url, data=payload)
+
+    response = make_response(service_response.json(), service_response.status_code)
+
+    response.headers = headers
+
+    return response
 
 
 def weight_request(weight_measure1, weight_value, weight_measure2):
@@ -110,9 +117,16 @@ def weight_request(weight_measure1, weight_value, weight_measure2):
     'weight_measure2': weight_measure2,
     'weight_value': weight_value}
 
-    response = requests.request("POST", url, data=payload)
+    headers = {"Content-Type": "application/json",  
+    'Access-Control-Allow-Origin': '*'}
 
-    return make_response(response.json(), response.status_code)
+    service_response = requests.request("POST", url, data=payload)
+
+    response = make_response(service_response.json(), service_response.status_code)
+
+    response.headers = headers
+
+    return response
 
 def temp_request(temp_measure1, temp_value, temp_measure2):
     url = "http://127.0.0.1:3534/temp_request"
@@ -121,12 +135,22 @@ def temp_request(temp_measure1, temp_value, temp_measure2):
     'temp_measure2': temp_measure2,
     'temp_value': temp_value}
 
-    response = requests.request("POST", url, data=payload)
+    headers = {"Content-Type": "application/json",  
+    'Access-Control-Allow-Origin': '*'}
 
-    return make_response(response.json(), response.status_code)
+    service_response = requests.request("POST", url, data=payload)
 
-@app.route('/conversions', methods=['GET'])
+    response = make_response(service_response.json(), service_response.status_code)
+
+    response.headers = headers
+
+    return response
+
+@app.route('/conversions', methods=['GET', 'OPTIONS'])
 def get_conversions():
+    if request.method == 'OPTIONS':
+        return cors_response()
+
     db = pymysql.connect("database-1.cjdljloisiap.us-east-2.rds.amazonaws.com", "clouduser", "cloudsqluser$1", "Conversions")
     cursor = db.cursor()
     cursor.execute('SELECT * From conversions ORDER BY ID DESC LIMIT 5')
@@ -136,7 +160,14 @@ def get_conversions():
     columns = ['mph', 'kph', 'lbs', 'kg', 'fahrenheit', 'celsius']
     conversions = [{k:v for (k,v) in zip(columns, row[1:]) if v != None} for row in results]
 
-    return make_response({'conversions': conversions}, 200)
+    headers = {"Content-Type": "application/json",  
+    'Access-Control-Allow-Origin': '*'}
+
+    response = make_response({'conversions': conversions}, 200)
+
+    response.headers = headers
+
+    return response
 
 def invalid_servicetype():
     headers = {"Content-Type": "application/json",  
